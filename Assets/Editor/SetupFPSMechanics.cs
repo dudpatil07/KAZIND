@@ -402,9 +402,9 @@ public static class SetupFPSMechanics
             >();
 
         controlsText.text =
-            "WASD  MOVE     SHIFT  SPRINT\\n" +
-            "SPACE  JUMP     LMB  SCOPE\\n" +
-            "RMB / A  SCAN     ESC  UNLOCK MOUSE";
+            "WASD  MOVE     SHIFT  SPRINT\n" +
+            "SPACE  JUMP     LMB  SCOPE\n" +
+            "RMB / F  SCAN     ESC  UNLOCK MOUSE";
 
         controlsText.fontSize =
             18f;
@@ -450,7 +450,7 @@ public static class SetupFPSMechanics
         );
 
         Debug.Log(
-            "RIGHT CLICK / A = Scan"
+            "RIGHT CLICK / F = Scan"
         );
 
         Debug.Log(

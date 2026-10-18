@@ -55,11 +55,28 @@ public class TrainingDrone : MonoBehaviour
     private Vector3 lastValidPosition;
 
     private float patrolTime;
-    private float phase;
+    [SerializeField, HideInInspector] private float phase;
 
-    private int surroundSlot;
+    [SerializeField, HideInInspector] private int surroundSlot;
+    public int SurroundSlot => surroundSlot;
 
     private Transform[] rotors;
+    private Vector3 spawnPosition;
+    private bool spawnCaptured;
+
+    public bool IsDowned { get; private set; }
+
+    private void Awake()
+    {
+        CaptureSpawn();
+    }
+
+    private void CaptureSpawn()
+    {
+        if (spawnCaptured) return;
+        spawnPosition = transform.position;
+        spawnCaptured = true;
+    }
 
     // ============================================================
     // CONFIGURATION
@@ -81,6 +98,7 @@ public class TrainingDrone : MonoBehaviour
         displayName = newName;
 
         patrolCenter = center;
+        spawnPosition = center;
 
         patrolHeight =
             Mathf.Max(
@@ -111,6 +129,29 @@ public class TrainingDrone : MonoBehaviour
         CacheRotors();
     }
 
+    public void DownForIdentification()
+    {
+        IsDowned = true;
+        enabled = false;
+        Vector3 downPosition = transform.position;
+        downPosition.y = 1.2f;
+        transform.position = downPosition;
+    }
+
+    public void ResetForRound()
+    {
+        // Inactive scene objects may not have received Awake yet.
+        CaptureSpawn();
+        IsDowned = false;
+        enabled = true;
+        transform.position = spawnPosition;
+        patrolCenter = spawnPosition;
+        patrolHeight = spawnPosition.y;
+        patrolTime = 0f;
+        aiState = AIState.Patrol;
+        lastValidPosition = spawnPosition;
+    }
+
     public void ConfigureAI(
         Transform targetPlayer,
         int slot
@@ -119,8 +160,8 @@ public class TrainingDrone : MonoBehaviour
         player =
             targetPlayer;
 
-        surroundSlot =
-            slot;
+        surroundSlot = Mathf.Max(0, slot);
+        phase = surroundSlot * 2.399963f;
 
         // IMPORTANT:
         // Whatever position the drone is currently in
@@ -200,7 +241,8 @@ public class TrainingDrone : MonoBehaviour
 
         foreach (Transform t in all)
         {
-            if (t.name.Contains("Rotor"))
+            // RotorArm is a structural support, not a spinning propeller.
+            if (t.name.StartsWith("Rotor_", System.StringComparison.Ordinal))
                 list.Add(t);
         }
 
@@ -407,22 +449,7 @@ public class TrainingDrone : MonoBehaviour
         if (player == null)
             return;
 
-        // Six stable positions around player.
-        float[] angles =
-        {
-            0f,
-            60f,
-            120f,
-            180f,
-            240f,
-            300f
-        };
-
-        float angle =
-            angles[
-                surroundSlot %
-                angles.Length
-            ];
+        float angle = (surroundSlot % 6) * 60f;
 
         // Small time variation so drones do not
         // look completely frozen.
@@ -438,7 +465,7 @@ public class TrainingDrone : MonoBehaviour
 
         float distance =
             surroundDistance +
-            (surroundSlot % 2) * 5f;
+            (surroundSlot % 2) * 5f + (surroundSlot / 6) * 12f;
 
         float height =
             surroundHeight +
@@ -602,6 +629,7 @@ public class TrainingDrone : MonoBehaviour
             in rotors
         )
         {
+            if (rotor == null) continue;
             rotor.Rotate(
                 Vector3.up,
                 1800f *

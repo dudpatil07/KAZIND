@@ -1,0 +1,7 @@
+Welcome to the Drone Threat Simulator. Start by choosing a mission. Civilian Tracking has three targets. Mixed Airspace adds a military aircraft. Full Threat Response includes all six drones.
+
+In the field, move with W, A, S, and D, and aim with your mouse. Center the crosshair on a drone and press F, or click Lock Aim. Keep it centered for ten seconds. If your aim slips, the lock resets.
+
+The drone will be brought down. You then have ten seconds to identify it. Check the airframe and signature, then choose Civilian or Military. You can also press J for Civilian or K for Military.
+
+Correct calls earn one hundred points. Wrong calls cost fifty. If time runs out, the drone escapes. Identify every target to complete the mission. Good luck.

@@ -27,6 +27,7 @@ public class FPSPlayerController : MonoBehaviour
     private float yaw;
 
     private bool mouseLocked;
+    private bool gameplayInputEnabled = true;
 
     void Awake()
     {
@@ -70,6 +71,9 @@ public class FPSPlayerController : MonoBehaviour
 
     void Update()
     {
+        if (!gameplayInputEnabled)
+            return;
+
         if (Keyboard.current == null)
             return;
 
@@ -81,6 +85,16 @@ public class FPSPlayerController : MonoBehaviour
         HandleLook();
         HandleMovement();
         HandleScope();
+    }
+
+    public void SetGameplayInputEnabled(bool enabled)
+    {
+        gameplayInputEnabled = enabled;
+
+        if (enabled)
+            LockMouse();
+        else
+            UnlockMouse();
     }
 
     // ============================================================

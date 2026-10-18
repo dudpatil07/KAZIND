@@ -35,13 +35,11 @@ public class DroneScanner : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current == null ||
-            Mouse.current == null)
-            return;
-
         bool scanPressed =
-            Keyboard.current.aKey.wasPressedThisFrame ||
-            Mouse.current.rightButton.wasPressedThisFrame;
+            (Keyboard.current != null &&
+             Keyboard.current.fKey.wasPressedThisFrame) ||
+            (Mouse.current != null &&
+             Mouse.current.rightButton.wasPressedThisFrame);
 
         if (scanPressed)
             StartScan();
@@ -81,8 +79,18 @@ public class DroneScanner : MonoBehaviour
             QueryTriggerInteraction.Ignore
         ))
         {
-            currentTarget =
-                hit.collider.gameObject;
+            TrainingDrone drone =
+                hit.collider.GetComponentInParent<TrainingDrone>();
+
+            if (drone == null)
+            {
+                scanning = false;
+                currentTarget = null;
+                SetUI("NO DRONE", "");
+                return;
+            }
+
+            currentTarget = drone.gameObject;
 
             scanTimer =
                 0f;
@@ -147,8 +155,11 @@ public class DroneScanner : MonoBehaviour
             return;
         }
 
-        if (!IsSameTarget(
-            hit.collider.gameObject,
+        TrainingDrone hitDrone =
+            hit.collider.GetComponentInParent<TrainingDrone>();
+
+        if (hitDrone == null || !IsSameTarget(
+            hitDrone.gameObject,
             currentTarget
         ))
         {
@@ -231,10 +242,12 @@ public class DroneScanner : MonoBehaviour
         if (target == null)
             return "";
 
-        Transform root =
-            target.transform.root;
+        TrainingDrone drone =
+            target.GetComponent<TrainingDrone>();
 
-        return root.name;
+        return drone != null && !string.IsNullOrWhiteSpace(drone.displayName)
+            ? drone.displayName
+            : target.name;
     }
 
     bool IsSameTarget(
@@ -245,10 +258,7 @@ public class DroneScanner : MonoBehaviour
         if (a == null || b == null)
             return false;
 
-        return
-            a == b ||
-            a.transform.root ==
-            b.transform.root;
+        return a == b;
     }
 
     // ==========================================================

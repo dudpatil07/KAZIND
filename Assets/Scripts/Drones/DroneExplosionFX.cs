@@ -27,7 +27,7 @@ public static class DroneExplosionFX
             flash.GetComponent<Collider>();
 
         if (flashCollider != null)
-            Object.DestroyImmediate(flashCollider);
+            Object.Destroy(flashCollider);
 
         Renderer renderer =
             flash.GetComponent<Renderer>();

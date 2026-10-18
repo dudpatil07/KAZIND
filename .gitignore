@@ -14,3 +14,6 @@
 *.userprefs
 .DS_Store
 Thumbs.db
+__pycache__/
+*.py[cod]
+mono_crash.*

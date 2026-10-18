@@ -1,0 +1,15 @@
+1
+00:00:01,000 --> 00:00:06,490
+Welcome to the Drone Threat Simulator. Start by choosing a mission.
+
+2
+00:00:15,000 --> 00:00:21,026
+Move with W, A, S, and D, and aim with your mouse.
+
+3
+00:00:42,000 --> 00:00:45,184
+Correct calls earn one hundred points.
+
+4
+00:00:56,500 --> 00:00:58,105
+Good luck.
