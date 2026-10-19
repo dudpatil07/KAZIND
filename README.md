@@ -12,7 +12,7 @@ Unity project for a simulated drone identification game. The saved environment, 
    Alternatively, use GitHub **Code → Download ZIP**, then fully extract it.
 3. In Unity Hub, select **Projects → Add → Add project from disk**. Select the `KAZIND` folder containing **Assets**, **Packages**, and **ProjectSettings**. For a ZIP download, this is usually `KAZIND-main`.
 4. Open with the specified Editor version. Allow the first import and Unity Package Manager downloads to finish; internet access is needed. If the college PC restricts installations, ask its administrator to install Unity Hub/Editor and the relevant modules.
-5. Open **Assets/Scenes/SampleScene.unity**, then press **Play**. The desktop version starts with a tutorial video; **Esc** skips it.
+5. After the first import, Unity automatically opens the saved simulator scene. Press the toolbar **Play** button, or choose **KAZIND → Play Simulator**. Both launch **Assets/Scenes/SampleScene.unity**, even if another scene was open. The desktop version starts with the same tutorial video and menus as the original PC; **Esc** skips the video.
 
 Open the project in Unity Hub, not the generated `.sln`/`.csproj` files or the Linux shell launcher. `Library`, `Temp`, IDE files, and build outputs are generated locally and are intentionally excluded from Git. No paid Asset Store download or Git LFS step is required for the included assets.
 
@@ -41,7 +41,7 @@ The project includes a runtime headset rig, Touch controller input, menus, galle
 
 ## Troubleshooting
 
-- **Empty scene:** explicitly open `Assets/Scenes/SampleScene.unity`. The repository contains the saved training environment; do not run map rebuilding commands unless you intend to regenerate it.
+- **Empty/default scene on another PC:** close Unity, update this checkout with `git pull`, and reopen it. For ZIP downloads, extract a fresh download into a new folder and add that folder in Unity Hub. After compilation, choose **KAZIND → Play Simulator**. The saved environment is already included; no map rebuilding commands are needed. Unsaved scenes are preserved, and startup does not regenerate or resave the environment.
 - **Missing packages or compiler errors:** let Package Manager finish, then inspect the first error in **Window → General → Console**. Verify internet access to Unity's package registry and the Editor version.
 - **Quest Link installer fails under Wine:** official Quest Link requires Windows. Use a Windows PC for Link or build an Android APK from Linux.
 - **Missing Android build target:** in Unity Hub, add Android Build Support, Android SDK & NDK Tools, and OpenJDK to this exact Editor version, then restart Unity.

@@ -6,50 +6,12 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 /// <summary>Replaces the flat silhouette dressing with terrain, vegetation and range vehicles.</summary>
-[InitializeOnLoad]
 public static class UpgradeRangeSurroundings
 {
-    const string ScenePath = "Assets/Scenes/SampleScene.unity";
     const string RootName = "RealisticRangeSurroundingsV2";
     const string OldRootName = "RealisticRangeSurroundings";
     const string LegacyRootName = "CinematicRangeSurroundings";
     const string MaterialFolder = "Assets/GeneratedTrainingGround/Materials";
-
-    static UpgradeRangeSurroundings()
-    {
-        EditorApplication.delayCall += ApplyOnFirstOpen;
-        EditorApplication.delayCall += ApplyWallFinishOnOpen;
-        EditorApplication.delayCall += ApplyGroundFinishOnOpen;
-        EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-    }
-
-    static void OnPlayModeStateChanged(PlayModeStateChange state)
-    {
-        if (state == PlayModeStateChange.EnteredEditMode)
-        {
-            EditorApplication.delayCall += ApplyOnFirstOpen;
-            EditorApplication.delayCall += ApplyWallFinishOnOpen;
-            EditorApplication.delayCall += ApplyGroundFinishOnOpen;
-        }
-    }
-
-    static void ApplyWallFinishOnOpen()
-    {
-        if (EditorApplication.isPlayingOrWillChangePlaymode ||
-            SceneManager.GetActiveScene().path != ScenePath ||
-            GameObject.Find("TrainingGround") == null) return;
-
-        ApplyWallFinish();
-    }
-
-    static void ApplyGroundFinishOnOpen()
-    {
-        if (EditorApplication.isPlayingOrWillChangePlaymode ||
-            SceneManager.GetActiveScene().path != ScenePath ||
-            GameObject.Find("TrainingGround") == null) return;
-
-        ApplyGroundFinish();
-    }
 
     [MenuItem("26247/PLAIN CONCRETE GROUND FINISH")]
     static void ApplyGroundFinish()
@@ -208,17 +170,6 @@ public static class UpgradeRangeSurroundings
     {
         if (material.HasProperty("_BaseColor")) material.SetColor("_BaseColor", color);
         if (material.HasProperty("_Color")) material.SetColor("_Color", color);
-    }
-
-    static void ApplyOnFirstOpen()
-    {
-        if (EditorApplication.isPlayingOrWillChangePlaymode ||
-            SceneManager.GetActiveScene().path != ScenePath ||
-            GameObject.Find(RootName) != null ||
-            GameObject.Find("TrainingGround") == null) return;
-
-        Apply();
-        EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
     }
 
     [MenuItem("26247/UPGRADE RANGE SURROUNDINGS")]

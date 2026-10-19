@@ -4,51 +4,61 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Builds the training scene the first time the project opens with the blank
-/// SampleScene. The saved scene is then used on later launches.
+/// Makes a fresh checkout launch the saved simulator without relying on Library/UserSettings.
 /// </summary>
 [InitializeOnLoad]
 public static class FirstLaunchTrainingSceneSetup
 {
-    private const string DefaultScenePath = "Assets/Scenes/SampleScene.unity";
+    public const string DefaultScenePath = "Assets/Scenes/SampleScene.unity";
+    private const string SessionKey = "KAZIND.StartupSceneConfigured";
 
     static FirstLaunchTrainingSceneSetup()
     {
-        EditorApplication.delayCall += BuildIfSceneIsEmpty;
+        if (!Application.isBatchMode)
+            EditorApplication.delayCall += ConfigureOnOpen;
     }
 
-    private static void BuildIfSceneIsEmpty()
+    private static void ConfigureOnOpen()
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode)
             return;
-
-        Scene scene = SceneManager.GetActiveScene();
-        if (scene.path != DefaultScenePath || GameObject.Find("TrainingGround") != null)
+        if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+        {
+            EditorApplication.delayCall += ConfigureOnOpen;
             return;
+        }
+        if (SessionState.GetBool(SessionKey, false)) return;
+        if (!ConfigurePlayScene()) return;
+        OpenSavedSceneIfSafe();
+        SessionState.SetBool(SessionKey, true);
+    }
 
-        Debug.Log("Building the training scene for the first time...");
+    public static bool ConfigurePlayScene()
+    {
+        SceneAsset scene = AssetDatabase.LoadAssetAtPath<SceneAsset>(DefaultScenePath);
+        if (scene == null)
+        {
+            Debug.LogError("KAZIND: saved simulator scene is missing. Download the complete repository again.");
+            return false;
+        }
+        EditorSceneManager.playModeStartScene = scene;
+        return true;
+    }
 
-        BuildTrainingGround.Build();
-        UpgradeTrainingGroundVisuals.Upgrade();
-        SetupTacticalVisuals.Setup();
-        AddMountainsAndClouds.Build();
+    public static void OpenSavedSceneIfSafe()
+    {
+        // Do not close another scene or discard unsaved work on a developer's existing checkout.
+        Scene current = SceneManager.GetActiveScene();
+        if (SceneManager.sceneCount == 1 && string.IsNullOrEmpty(current.path) && !current.isDirty)
+            EditorSceneManager.OpenScene(DefaultScenePath, OpenSceneMode.Single);
+    }
 
-        // The map builder adds a camera for preview. The player setup creates
-        // the gameplay camera, so remove the preview camera to avoid two.
-        GameObject previewCamera = GameObject.Find("TrainingGround/Main Camera");
-        if (previewCamera != null)
-            Object.DestroyImmediate(previewCamera);
-
-        SetupFPSMechanics.Setup();
-        SetupDroneThreatSystem.Setup();
-        SetupDroneAI.Setup();
-        FixDroneVisibility.Fix();
-        SetupScopeInterface.Setup();
-
-        EditorSceneManager.MarkSceneDirty(scene);
-        EditorSceneManager.SaveScene(scene);
-        AssetDatabase.SaveAssets();
-
-        Debug.Log("Training scene built and saved. Press Play to enter the drone training ground.");
+    [MenuItem("KAZIND/Play Simulator")]
+    public static void PlaySimulator()
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode || !ConfigurePlayScene()) return;
+        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+        EditorApplication.ExecuteMenuItem("Window/General/Game");
+        EditorApplication.EnterPlaymode();
     }
 }
