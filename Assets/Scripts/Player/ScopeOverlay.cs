@@ -168,6 +168,8 @@ public class ScopeOverlay : MonoBehaviour
 
     void OnGUI()
     {
+        if (QuestPlayerRig.Active)
+            return;
         if (player == null)
             return;
 

@@ -1,51 +1,57 @@
-KAZIND — Drone Threat Simulation Trainer
-A Unity-based training simulation for identifying and responding to simulated drone threats.
-Requirements
-- Unity Hub
-- Recommended Unity Editor version: Unity 6 (6000.0.84f1), if available
-- Git (optional, if cloning the repository)
-Open the project in Unity
-Option 1: Clone from GitHub
-1. Install and open Unity Hub.
-2. Open a terminal and run:
+# KAZIND — Drone Threat Simulation Trainer
+
+Unity project for a simulated drone identification game. The saved environment, scripts, materials, models, narration, tutorial videos, and project settings are included in this repository.
+
+## Open on the college PC
+
+1. Install **Unity Hub** and **Unity Editor 6000.0.84f1 (Unity 6 LTS)**. Use the version recorded in `ProjectSettings/ProjectVersion.txt`.
+2. Clone the repository:
+   ```sh
    git clone https://github.com/dudpatil07/KAZIND.git
-3. In Unity Hub, select Projects.
-4. Click Add or Add project from disk.
-5. Select the cloned KAZIND folder — the folder containing Assets, Packages, and ProjectSettings.
-6. If prompted to choose an Editor version, select Unity 6 (6000.0.84f1) if installed. Otherwise, install that version through Unity Hub or choose a compatible Unity 6 version.
-7. Open the project and wait for Unity to import assets and compile scripts.
-Option 2: Open a downloaded project folder
-1. Download or extract the project files.
-2. Open Unity Hub and go to Projects.
-3. Click Add or Add project from disk.
-4. Choose the project root folder containing Assets, Packages, and ProjectSettings.
-5. Open it and wait for the initial import and script compilation to finish.
-Run the simulation
-1. In Unity, open the scene used by the project. The default scene may be SampleScene.
-2. Click Play to start the simulation.
-3. Check Window → General → Console if errors appear during compilation or Play mode.
-If the training environment or gameplay objects are missing, check the Unity Editor's 26247 menu for available setup/build commands. Run setup commands only when needed, verify the result, and save the scene.
-Intended controls
-Controls may vary depending on the current scene and scripts.
-- W / A / S / D — Move
-- Mouse — Look around
-- Space — Jump
-- Left Shift — Run
-- Left mouse button or O — Scope/zoom
-- E — Scan a detected drone when prompted
-- J / K — Choose a threat classification when prompted
-- Esc — Release the mouse cursor
-Troubleshooting
-- Unity asks to upgrade the project: Prefer the specified Unity version. Back up or commit your work before opening the project with a different Editor version.
-- Scripts fail to compile: Open Window → General → Console, address the first reported error, and wait for Unity to recompile.
-- Scene looks empty: Confirm that you opened the correct project root and scene. Check the 26247 menu for available environment-building commands.
-- Assets are missing: Wait for Unity to finish importing. Do not delete Assets, Packages, or ProjectSettings.
-- Git reports a conflict: Keep a backup and resolve the conflict instead of force-pushing.
-Project structure
-- Assets/ — Scenes, scripts, materials, models, and other Unity assets
-- Packages/ — Unity package manifest and package configuration
-- ProjectSettings/ — Unity project settings
-Notes
-- This project is intended as a simulated training environment.
-- Avoid committing Unity-generated folders such as Library/, Temp/, Logs/, or build output unless specifically required.
-- After making changes, save the scene and commit the relevant project files to Git.
+   ```
+   Alternatively, use GitHub **Code → Download ZIP**, then fully extract it.
+3. In Unity Hub, select **Projects → Add → Add project from disk**. Select the `KAZIND` folder containing **Assets**, **Packages**, and **ProjectSettings**. For a ZIP download, this is usually `KAZIND-main`.
+4. Open with the specified Editor version. Allow the first import and Unity Package Manager downloads to finish; internet access is needed. If the college PC restricts installations, ask its administrator to install Unity Hub/Editor and the relevant modules.
+5. Open **Assets/Scenes/SampleScene.unity**, then press **Play**. The desktop version starts with a tutorial video; **Esc** skips it.
+
+Open the project in Unity Hub, not the generated `.sln`/`.csproj` files or the Linux shell launcher. `Library`, `Temp`, IDE files, and build outputs are generated locally and are intentionally excluded from Git. No paid Asset Store download or Git LFS step is required for the included assets.
+
+## Play on Meta Quest 3
+
+See **[Quest 3 setup and controls](Docs/Quest3-Setup.md)** for both routes:
+
+- **Windows PC + Quest Link:** install Meta Quest Link, set it as the active OpenXR runtime, and use **26247 → Quest 3 → Configure Windows Quest Link** in Unity. This route does not require Android Build Support.
+- **Standalone headset app:** install Unity's Android Build Support with SDK/NDK Tools and OpenJDK, then use **26247 → Quest 3 → Configure Android VR** and build for Android.
+
+The project includes a runtime headset rig, Touch controller input, menus, gallery, and HUD for VR. Desktop controls remain available when XR is inactive. **Quest hardware behaviour and performance still require testing on the college PC/headset; this repository is not a tested Quest release.**
+
+## Desktop controls
+
+| Action | Control |
+| --- | --- |
+| Move | W / A / S / D |
+| Look | Mouse |
+| Jump | Space |
+| Run | Left Shift |
+| Lock onto a centred drone | F, E, or left mouse click |
+| Scope | Hold left mouse button |
+| Classify when prompted | J: civilian; K: military |
+| Release cursor / skip intro | Esc |
+| Compare graphics modes | F8 |
+
+## Troubleshooting
+
+- **Empty scene:** explicitly open `Assets/Scenes/SampleScene.unity`. The repository contains the saved training environment; do not run map rebuilding commands unless you intend to regenerate it.
+- **Missing packages or compiler errors:** let Package Manager finish, then inspect the first error in **Window → General → Console**. Verify internet access to Unity's package registry and the Editor version.
+- **Quest Link installer fails under Wine:** official Quest Link requires Windows. Use a Windows PC for Link or build an Android APK from Linux.
+- **Missing Android build target:** in Unity Hub, add Android Build Support, Android SDK & NDK Tools, and OpenJDK to this exact Editor version, then restart Unity.
+- **Updating an existing checkout:** save your changes before `git pull`; resolve conflicts rather than overwriting work.
+
+## Repository contents
+
+- `Assets/` — saved scene, game scripts, models, materials, shaders, audio, and runtime videos, including Unity `.meta` files.
+- `Packages/` — pinned Unity package manifest and dependency lockfile.
+- `ProjectSettings/` — Unity version and project configuration.
+- `Docs/` — setup and presentation notes.
+- `Preview/` — recorded gameplay preview and its source recording.
+- `TutorialVideo/` and `Tools/` — tutorial sources and optional media-generation utilities. These utilities are not needed to open or play the Unity project.

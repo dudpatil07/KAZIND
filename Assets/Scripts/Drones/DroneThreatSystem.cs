@@ -5,7 +5,7 @@ using UnityEngine.Video;
 using System.IO;
 
 [DefaultExecutionOrder(1000)]
-public class DroneThreatSystem : MonoBehaviour
+public partial class DroneThreatSystem : MonoBehaviour
 {
     private enum GameState { IntroVideo, MainMenu, Tutorial, Briefing, Playing, Locking, Identifying, LevelComplete }
 
@@ -102,6 +102,8 @@ public class DroneThreatSystem : MonoBehaviour
 
     private void Update()
     {
+        if (QuestPlayerRig.Active && UpdateQuestInput())
+            return;
         if (voiceGuidance != null) voiceGuidance.AllowReminders = state == GameState.Playing;
         if (state == GameState.IntroVideo)
         {
@@ -166,6 +168,13 @@ public class DroneThreatSystem : MonoBehaviour
             identifyTimer -= Time.deltaTime;
             if (identifyTimer <= 0f)
                 IdentificationExpired();
+            else if (QuestPlayerRig.Active)
+            {
+                if (QuestPlayerRig.Instance.APressed)
+                    AttemptIdentification(TrainingDrone.DroneClass.Cheap);
+                else if (QuestPlayerRig.Instance.BPressed)
+                    AttemptIdentification(TrainingDrone.DroneClass.Military);
+            }
             else if (Keyboard.current != null)
             {
                 if (Keyboard.current.jKey.wasPressedThisFrame)
@@ -178,6 +187,8 @@ public class DroneThreatSystem : MonoBehaviour
 
     private bool WasIdentifyPressed()
     {
+        if (QuestPlayerRig.Active)
+            return QuestPlayerRig.Instance.TriggerPressed;
         return Keyboard.current != null &&
             (Keyboard.current.fKey.wasPressedThisFrame ||
              Keyboard.current.eKey.wasPressedThisFrame ||
@@ -472,6 +483,8 @@ public class DroneThreatSystem : MonoBehaviour
 
     private void OnGUI()
     {
+        if (QuestPlayerRig.Active)
+            return;
         if (state == GameState.Briefing)
         {
             briefingScreen.Draw();

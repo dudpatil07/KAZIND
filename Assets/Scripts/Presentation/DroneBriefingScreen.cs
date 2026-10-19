@@ -23,6 +23,11 @@ public sealed class DroneBriefingScreen : MonoBehaviour
     private Action onContinue;
     private Action onCancel;
     public bool IsOpen { get; private set; }
+    public Texture PreviewTexture => texture;
+    public string SelectedName => Names[selected];
+    public string SelectedProfile => Profiles[selected];
+    public void CycleModel(int direction) => Select((selected + direction + models.Length) % models.Length);
+    public void ContinueFromVR() => Finish(true);
 
     public void Show(int level, Action continueAction, Action cancelAction)
     {
@@ -70,6 +75,7 @@ public sealed class DroneBriefingScreen : MonoBehaviour
         previewCamera.farClipPlane = 15;
         previewCamera.allowHDR = false;
         previewCamera.allowMSAA = false;
+        previewCamera.stereoTargetEye = StereoTargetEyeMask.None;
         UniversalAdditionalCameraData cameraData = cameraObject.AddComponent<UniversalAdditionalCameraData>();
         cameraData.renderPostProcessing = false;
         cameraData.renderShadows = false;

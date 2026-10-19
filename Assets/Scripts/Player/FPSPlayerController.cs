@@ -28,6 +28,7 @@ public class FPSPlayerController : MonoBehaviour
 
     private bool mouseLocked;
     private bool gameplayInputEnabled = true;
+    public bool GameplayInputEnabled => gameplayInputEnabled;
 
     void Awake()
     {
@@ -71,6 +72,8 @@ public class FPSPlayerController : MonoBehaviour
 
     void Update()
     {
+        if (QuestPlayerRig.Active)
+            return;
         if (!gameplayInputEnabled)
             return;
 
@@ -192,6 +195,8 @@ public class FPSPlayerController : MonoBehaviour
 
     void LockMouse()
     {
+        if (QuestPlayerRig.Active)
+            return;
         Cursor.lockState =
             CursorLockMode.Locked;
 
